@@ -6,7 +6,7 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from PIL import Image
 
-model_gender = load_model(r"Model\GenderModel.h5")
+model_gender = load_model(r"Model\GenderDetectionV16.h5")
 
 classifier = cv.CascadeClassifier(r"Model\face_detector.xml")
 
@@ -14,8 +14,6 @@ classifier = cv.CascadeClassifier(r"Model\face_detector.xml")
 def face_extractor(img):
     faces = classifier.detectMultiScale(img, 1.3, 5)
     rect_coord = []
-    if faces is ():
-        return None
     # Crop all faces found
     # The (x,y) coordinates are from the top-left corner of the image
     for (x, y, w, h) in faces:
@@ -26,7 +24,7 @@ def face_extractor(img):
 
 
 def gender(cropped_face):
-    cropped_face = cv.resize(cropped_face, (92, 114))
+    cropped_face = cv.resize(cropped_face, (114, 92))
     im = Image.fromarray(cropped_face, 'RGB')
     img_array = np.array(im)
     img_array = np.expand_dims(img_array, axis=0)
@@ -48,7 +46,14 @@ def open_webcam():
             for y, h, x, w, cropped_face in face:
                 if type(cropped_face) is np.ndarray:
                     sex_pred = gender(cropped_face)
-                    sex_text = 'Male' if sex_pred > 0.5 else 'Female'
+                    # sex_text = ''
+                    if sex_pred > 0.5:
+                        sex_text= 'Male'
+                        sex_pred= sex_pred
+                    else:
+                        sex_text= 'Female'
+                        sex_pred= 1-sex_pred
+                    # sex_text = 'Male' if sex_pred > 0.5 else 'Female'
                     cv.putText(frame, 'Sex: {}({:.2f})'.format(sex_text, sex_pred), (x, y - 10),
                                cv.FONT_HERSHEY_SIMPLEX, 0.5, (36, 255, 12), 1)
             ret, buffer = cv.imencode(".jpg", frame)
