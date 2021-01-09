@@ -1,0 +1,21 @@
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8  offset-lg-2">
+            <center><h3 class="mt-5">Started Live Streaming</h3></center>
+            <center>
+            <img src="{{ url_for('video_feed') }}" height="400" width="600">
+            </center>
+            <center>
+            <!form action="{{url_for('prediction')}}" method="get">
+                <button type="button" class="btn" >Start Recording</button>
+            <!/form>
+            <form action="{{url_for('end_prediction')}}" method="post">
+                <button type="button" class="btn" >End Recording</button>
+            </form>
+            </center>
+                <!img src="{{ url_for('video_feed') }}" width="70%">
+        </div>
+    </div>
+</div>
+</body>
