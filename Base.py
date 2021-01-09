@@ -3,13 +3,17 @@ import os
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import numpy as np
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model, model_from_yaml
 from PIL import Image
 
-model_gender = load_model(r"Model\GenderDetectionV16.h5")
+# model_gender = load_model(r"Model\GenderDetectionV16.h5")
 
 classifier = cv.CascadeClassifier(r"Model\face_detector.xml")
-
+yaml_file = open(r"Model\yamlmodel.yaml")
+yaml_model = yaml_file.read()
+yaml_file.close()
+model_gender = model_from_yaml(yaml_model)
+model_gender.load_weights(r"Model\weight.h5")
 
 def face_extractor(img):
     faces = classifier.detectMultiScale(img, 1.3, 5)
